@@ -23,23 +23,19 @@ unsigned long time1 = 0;
 unsigned long time2 = 0;
 float spd = 0;
 float secs = 0;
-int state = 0;
-//    0 == wait
-//    1 == working
-//    2 == done
+int gate1state = 0;
+int gate2state = 0;
 
 void gate1(){
-    //time1=micros();
-      time1 = ESP.getCycleCount();
-      state=1;
+    time1 = ESP.getCycleCount();
     Serial.println("gate1");
+    gate2state = 0;
+    gate1state = 1;
 }
 
 void gate2(){
-    //time2=micros();
-      time2 = ESP.getCycleCount();
-      state=2;
-    //Serial.println("gate2");
+    time2 = ESP.getCycleCount();
+    gate2state = 1;
 }
 void handle_root(){
   // returns all current results
@@ -103,8 +99,7 @@ void setup() {
 
 void loop() {
   server.handleClient();
-  //if (digitalRead(gate2pin) == 1 && state == 2 ){
-  if ( state == 2 ){
+  if ( gate1state == 1 && gate2state == 1) {
     //secs = (time2-time1)/1000000.00;
     secs = ((time2-time1) * CYCLETIME)/(1000 * 1000000.00);
     spd = 0.2/secs;
@@ -125,7 +120,8 @@ void loop() {
     time1 = 0;
     time2 = 0;
     spd = 0;
-    state = 0;
+    gate1state = 0;
+    gate2state = 0;
     
   }
 }

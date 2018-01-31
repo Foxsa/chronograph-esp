@@ -4,6 +4,7 @@
 
 #define RESULTS_NUM 128
 #define CYCLETIME 12.5 // ns
+#define SENSOR_LEN 0.2 // (m) Distance between optocouples in meters
 //#define CYCLES_MICRO (1000 / CYCLETIME)
 
 // wifi params of network to connect
@@ -50,7 +51,7 @@ void handle_root(){
   for (int i = 0; i < idx; i++ ){
     webString += String(i);
     webString += " ";
-    webString += String(0.2/results[i], 3);
+    webString += String(SENSOR_LEN/results[i], 3);
     webString += "<br>";
   }
   webString += "<br><br><a href=/reset>Reset<br>";
@@ -102,7 +103,7 @@ void loop() {
   if ( gate1state == 1 && gate2state == 1) {
     //secs = (time2-time1)/1000000.00;
     secs = ((time2-time1) * CYCLETIME)/(1000 * 1000000.00);
-    spd = 0.2/secs;
+    spd = SENSOR_LEN/secs;
     
     Serial.print(spd);
     Serial.print(",");
